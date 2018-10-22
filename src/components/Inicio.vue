@@ -13,19 +13,32 @@
         </div>
         <div class="input-group input-group-sm mb-3">
           <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-sm">Filtro</span>
+            <span class="input-group-text" id="inputGroup-sizing-sm">Docente</span>
           </div>
             <input type="text" v-model="search" class="form-control"
             aria-label="Small" aria-describedby="inputGroup-sizing-sm"
-            placeholder="Nombre o apellido del profesor...">
+            placeholder="Docente...">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Carrera</span>
+          </div>
+            <input type="text" v-model="searchCarrera" class="form-control"
+            aria-label="Small" aria-describedby="inputGroup-sizing-sm"
+            placeholder="Carrera...">
         </div>
         <div>
         <b-card-group deck>
             <b-card no-body header="<b>Profesores de la Universidad</b>">
               <b-list-group flush>
                 <b-list-group-item href="#" v-for="user in filtrarProfes" v-if="user.type=='Profesor'">
-                  <h6>{{user.name}}</h6>
-                  <h6>Especialidad: {{user.carrera}}</h6>
+                  <table style="margin: 0 auto;">
+                    <h6 v-model="user.name">{{user.name}} ({{user.carrera}})</h6>
+                    <b-btn v-b-toggle.collapse2 class="m-1">Desplegar QR</b-btn>
+                    <b-collapse id="collapse2">
+                      <b-card>
+                        <qr-code :text="user.name"></qr-code>
+                      </b-card>
+                    </b-collapse>
+                  </table>
                 </b-list-group-item>
               </b-list-group>
             </b-card>
@@ -37,6 +50,7 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import Router from 'vue-router'
   import firebase from 'firebase'
   import VueFire from 'vuefire'
@@ -45,7 +59,8 @@
   export default {
     data(){
       return{
-        search:""
+        search:"",
+        searchCarrera:""
       }
     },
     methods:{
@@ -62,7 +77,11 @@
     computed:{
       filtrarProfes: function(){
         return this.users.filter((user)=>{
-          return user.name.match(this.search)
+          console.log(user)
+          if(user.type=="Profesor"){
+            return (user.name.toLowerCase().match(this.search.toLowerCase()) && user.carrera.toLowerCase().match(this.searchCarrera.toLowerCase()))
+          }
+
         });
       }
     }
@@ -96,6 +115,12 @@ img.Logo {
   color: #fff;
   background-color: rgba(40, 167, 69, 0.5);
   border-color: #6c757d;
+}
+.m-1{
+  color: inherit;
+}
+.btn-secondary{
+  background-color: #e9ecef;
 }
 /* The "Forgot password" text */
 span.psw {

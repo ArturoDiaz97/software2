@@ -6,6 +6,8 @@ import router from './router'
 import firebase from 'firebase'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Home from './components/Home'
+import VueQRCodeComponent from 'vue-qrcode-component'
+Vue.component('qr-code', VueQRCodeComponent)
 
 Vue.use(VueSweetalert2);
 
@@ -16,7 +18,7 @@ firebase.auth().onAuthStateChanged(function(user){
   new Vue({
     el: '#app',
     router,
-    components: { App },
+    components: {App},
     template: '<App/>'
   })
 });
