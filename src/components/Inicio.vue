@@ -35,7 +35,7 @@
                     <b-btn v-b-toggle.collapse2 class="m-1">Desplegar QR</b-btn>
                     <b-collapse id="collapse2">
                       <b-card>
-                        <qr-code :text="user.name"></qr-code>
+                        <qr-code :text="user['.key']"></qr-code>
                       </b-card>
                     </b-collapse>
                   </table>
@@ -60,7 +60,8 @@
     data(){
       return{
         search:"",
-        searchCarrera:""
+        searchCarrera:"",
+
       }
     },
     methods:{

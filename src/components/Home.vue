@@ -35,10 +35,11 @@
         <b-card-group deck>
             <b-card no-body header="<b>Solicitudes pendientes</b>">
               <b-list-group flush>
-                <b-list-group-item href="#" v-for="" v-if="">
+                <b-list-group-item @click ="comprobar_id" href="#"
+                v-for="asesoria in asesorias" v-if="id == asesoria['.key']">
                   <table style="margin: 0 auto;">
-                    No tiene ninguna solicitud pendiente
-                </table>
+                    {{asesoria['.value']}}
+                  </table>
                 </b-list-group-item>
               </b-list-group>
             </b-card>
@@ -46,8 +47,6 @@
       </div>
     </div>
   </div>
-
-
 </template>
 
 <script>
@@ -59,8 +58,10 @@ export default {
     return {
       email: firebase.auth().currentUser.email,
       n: db.ref('user/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
-        snapshot.val().name
-      })
+        return snapshot.val().name
+      }),
+      id: db.ref('user/' + firebase.auth().currentUser.uid).key,
+      count : 0
     }
   },
   methods: {
@@ -69,8 +70,19 @@ export default {
       .auth()
       .signOut()
       .then(()=>this.$router.replace('login'));
+    },
+    comprobar_id(){
+      if (firebase.auth().currentUser.uid == this.id){
+        console.log("hola")
+      }
     }
-  }
+  },
+  firebase: {
+      asesorias: db.ref('asesoria')
+  },
+  created() {
+    console.log(this.asesorias)
+  },
 }
 </script>
 
