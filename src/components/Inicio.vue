@@ -7,7 +7,7 @@
     <a href="#" @click ="ir_login"> Loguearse a Asesorias Ulima </a>
     </div>
     <div class="home-box">
-      <form action="">
+      <form >
         <div class="imgcontainer">
           <img src="../assets/Logo.jpg" alt="Avatar" class="Logo">
         </div>
@@ -29,11 +29,11 @@
         <b-card-group deck>
             <b-card no-body header="<b>Profesores de la Universidad</b>">
               <b-list-group flush>
-                <b-list-group-item href="#" v-for="user in filtrarProfes" v-if="user.type=='Profesor'">
+                <b-list-group-item v-responsive.class v-for="user in filtrarProfes" v-if="user.type=='Profesor'">
                   <table style="margin: 0 auto;">
                     <h6 v-model="user.name">{{user.name}} ({{user.carrera}})</h6>
                     <b-btn v-b-toggle.collapse2 class="m-1">Desplegar QR</b-btn>
-                    <b-collapse id="collapse2">
+                    <b-collapse id ="collapse2">
                       <b-card>
                         <qr-code :text="user['.key']"></qr-code>
                       </b-card>
@@ -54,6 +54,7 @@
   import Router from 'vue-router'
   import firebase from 'firebase'
   import VueFire from 'vuefire'
+  import responsive from 'vue-responsive'
   import {db} from '../firebase'
 
   export default {

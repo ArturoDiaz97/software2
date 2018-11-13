@@ -23,8 +23,8 @@
 
 <script>
 import firebase from 'firebase'
-import sweetalert from 'sweetalert';
 import {db} from '../firebase'
+import swal from 'sweetalert2'
 
 
 export default {

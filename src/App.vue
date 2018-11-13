@@ -9,7 +9,9 @@ import Vue from 'vue'
 import firebase from 'firebase'
 import VueFire from 'vuefire'
 import bootstrapVue from 'bootstrap-vue'
-import sweetalert from 'sweetalert'
+import responsive from 'vue-responsive'
+
+Vue.use(responsive)
 
 Vue.use(VueFire)
 Vue.use(bootstrapVue)

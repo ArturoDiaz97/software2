@@ -4,12 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import firebase from 'firebase'
-import VueSweetalert2 from 'vue-sweetalert2';
 import Home from './components/Home'
 import VueQRCodeComponent from 'vue-qrcode-component'
-Vue.component('qr-code', VueQRCodeComponent)
+import swal from 'sweetalert2'
+import responsive from 'vue-responsive'
 
-Vue.use(VueSweetalert2);
+Vue.component('qr-code', VueQRCodeComponent)
+Vue.componne
+
 
 Vue.config.productionTip = false
 
