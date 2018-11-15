@@ -13,7 +13,7 @@
           <b-tabs pills card>
             <b-tab title="Asesorias atendidas" active>
               <b-list-group flush>
-                <b-list-group-item v-for="asesoria in asesorias"  v-if="id == asesoria.profesor && asesoria.estado=='ATENDIDA'">
+                <b-list-group-item v-for="asesoria in asesorias"  v-if="id == asesoria.profesor && asesoria.estado=='TERMINADO'">
                   <table style="margin: 0 auto;">
                       {{asesoria.nameAlumno}}
                       {{asesoria.dia}}
@@ -114,7 +114,7 @@ export default {
    },
     marcar_atendida(id){
       firebase.database().ref('solicitudes/' + id).update({
-       estado: 'ATENDIDA',
+       estado: 'TERMINADO',
        });
    },
     subir_archivo(id){
@@ -127,6 +127,8 @@ export default {
       const uploader = document.getElementById('uploader');
       let size = 5242880 // equivale a 5MB -> 5242880
       let getFile = e.target.files[0];
+      let file_type = getFile.name.split('.').pop();
+      let file_name = getFile.name.substr(0, getFile.name.lastIndexOf("."))
       let storageRef = firebase.storage().ref('archivos/' + getFile.name);
       let task = storageRef.put(getFile);
       task.on('state_changed',
@@ -141,11 +143,15 @@ export default {
         var URL_r = storageRef.getDownloadURL().then(function(url){
           var firebaseRef= db.ref('solicitudes/' + k);
           var archivoRef = firebaseRef.child('archivos');
-          if (getFile.size <= size){
+          if (getFile.size <= size && (file_type == "xlsx" || file_type == "txt"
+              || file_type == "pdf" || file_type == "png" || file_type == "jpg"
+              || file_type == "docx" || file_type == "pptx")){
             var newPostRef = archivoRef.push();
             newPostRef.set({
               url_archivo : url,
-              name_archivo : getFile.name
+              name_archivo : file_name,
+              tipo_archivo : file_type,
+              size_archivo : (getFile.size) / 1000000 + " MB"
             })
             swal({
                   position: 'top-start',
@@ -156,23 +162,36 @@ export default {
                   toast: true
                 })
             uploader.value = null
-          }
-          else{
+          }else if (getFile.size > size) {
             swal({
                   position: 'top-start',
                   type: 'error',
                   title: 'Tu archivo no puede exceder a los 5 MB',
                   showConfirmButton: false,
-                  timer: 2500,
+                  timer: 7500,
                   toast: true
             })
             uploader.value = null
             storageRef.delete().then(function() {
                 console.log("Borrado bien")
               })
-          }
+          } else{
+            swal({
+                  position: 'top-start',
+                  type: 'error',
+                  title: 'Tipo de archivo no permitido',
+                  showConfirmButton: false,
+                  timer: 7500,
+                  toast: true
+            })
+            uploader.value = null
+            storageRef.delete().then(function() {
+                console.log("Borrado bien")
+              })
+            }
         });
-        console.log(getFile.size)
+        console.log(file_name)
+
         }
       );
     }
