@@ -113,87 +113,117 @@ export default {
        });
    },
     marcar_atendida(id){
-      firebase.database().ref('solicitudes/' + id).update({
-       estado: 'TERMINADO',
-       });
-   },
-    subir_archivo(id){
-      firebase.storage().ref('archivos').put(this.file).then(function(snapshot){
-        console.log("archivo subido!!")
-      });
-  },
-    fileBtn(e, k){
-        e.preventDefault();
-      const uploader = document.getElementById('uploader');
-      let size = 5242880 // equivale a 5MB -> 5242880
-      let getFile = e.target.files[0];
-      let file_type = getFile.name.split('.').pop();
-      let file_name = getFile.name.substr(0, getFile.name.lastIndexOf("."))
-      let storageRef = firebase.storage().ref('archivos/' + getFile.name);
-      let task = storageRef.put(getFile);
-      task.on('state_changed',
-       function progress(snapshot){
-        let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) *100;
-        uploader.value = percentage;
-      },
-      function error(err){
-        console.log(err)
-      },
-      function complete(){
-        var URL_r = storageRef.getDownloadURL().then(function(url){
-          var firebaseRef= db.ref('solicitudes/' + k);
-          var archivoRef = firebaseRef.child('archivos');
-          if (getFile.size <= size && (file_type == "xlsx" || file_type == "txt"
-              || file_type == "pdf" || file_type == "png" || file_type == "jpg"
-              || file_type == "docx" || file_type == "pptx")){
-            var newPostRef = archivoRef.push();
-            newPostRef.set({
-              url_archivo : url,
-              name_archivo : file_name,
-              tipo_archivo : file_type,
-              size_archivo : (getFile.size) / 1000000 + " MB"
-            })
-            swal({
-                  position: 'top-start',
-                  type: 'success',
-                  title: 'Archivo subido exitosamente!',
-                  showConfirmButton: false,
-                  timer: 1500,
-                  toast: true
-                })
-            uploader.value = null
-          }else if (getFile.size > size) {
-            swal({
-                  position: 'top-start',
-                  type: 'error',
-                  title: 'Tu archivo no puede exceder a los 5 MB',
-                  showConfirmButton: false,
-                  timer: 7500,
-                  toast: true
-            })
-            uploader.value = null
-            storageRef.delete().then(function() {
-                console.log("Borrado bien")
-              })
-          } else{
-            swal({
-                  position: 'top-start',
-                  type: 'error',
-                  title: 'Tipo de archivo no permitido',
-                  showConfirmButton: false,
-                  timer: 7500,
-                  toast: true
-            })
-            uploader.value = null
-            storageRef.delete().then(function() {
-                console.log("Borrado bien")
-              })
+      swal({
+            title: 'Estas seguro de marcarla como atendida?',
+            text: "No tendrás oportunidad de revertir esto! ",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, marcar como atendida'
+          }).then((result) => {
+            if (result.value) {
+              firebase.database().ref('solicitudes/' + id).update({
+               estado: 'TERMINADO',
+               });
+              swal(
+                'Marcada exitosamente',
+                '',
+                'success'
+              )
             }
-        });
-        console.log(file_name)
+          })
+   },
+    fileBtn(e, k){
+      let getFile = e.target.files[0]
+      swal({
+            title: `Desea subir el archivo ${getFile.name}?`,
+            text: "No habrá manera de revertir esto!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, súbelo!'
+          }).then((result) => {
+            if (result.value) {
+              swal(
+                'Subido exitosamente!',
+                '',
+                'success'
+              )
+              e.preventDefault();
+              const uploader = document.getElementById('uploader');
+              let size = 5242880 // equivale a 5MB -> 5242880
+              let file_type = getFile.name.split('.').pop();
+              let file_name = getFile.name.substr(0, getFile.name.lastIndexOf("."))
+              let storageRef = firebase.storage().ref('archivos/' + getFile.name);
+              let task = storageRef.put(getFile);
+              var tarea = task.on('state_changed',
+               function progress(snapshot){
+                let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) *100;
+                uploader.value = percentage;
+              },
+              function error(err){
+                console.log(err)
+              },
+              function complete(){
+                var URL_r = storageRef.getDownloadURL().then(function(url){
+                  var firebaseRef= db.ref('solicitudes/' + k);
+                  var archivoRef = firebaseRef.child('archivos');
+                  if (getFile.size <= size && (file_type == "xlsx" || file_type == "txt"
+                      || file_type == "pdf" || file_type == "png" || file_type == "jpg"
+                      || file_type == "docx" || file_type == "pptx" || file_type == "jpeg")){
+                    var newPostRef = archivoRef.push();
+                    newPostRef.set({
+                      url_archivo : url,
+                      name_archivo : file_name,
+                      tipo_archivo : file_type,
+                      size_archivo : (getFile.size) / 1000000 + " MB"
+                    })
+                    swal({
+                          position: 'top-start',
+                          type: 'success',
+                          title: 'Archivo subido exitosamente!',
+                          showConfirmButton: false,
+                          timer: 1500,
+                          toast: true
+                        })
+                    uploader.value = null
+                  }else if (getFile.size > size) {
+                    swal({
+                          position: 'top-start',
+                          type: 'error',
+                          title: 'Tu archivo no puede exceder a los 5 MB',
+                          showConfirmButton: false,
+                          timer: 7500,
+                          toast: true
+                    })
+                    uploader.value = null
+                    storageRef.delete().then(function() {
+                        console.log("Borrado bien")
+                      })
+                  } else{
+                    swal({
+                          position: 'top-start',
+                          type: 'error',
+                          title: 'Tipo de archivo no permitido',
+                          showConfirmButton: false,
+                          timer: 7500,
+                          toast: true
+                    })
+                    uploader.value = null
+                    storageRef.delete().then(function() {
+                        console.log("Borrado bien")
+                      })
+                    }
+                });
+                console.log(getFile.name)
 
-        }
-      );
+                }
+              );
+            }
+          })
+
     }
   },
   firebase: {
