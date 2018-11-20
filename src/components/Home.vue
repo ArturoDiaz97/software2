@@ -137,7 +137,7 @@ export default {
     fileBtn(e, k){
       let getFile = e.target.files[0]
       swal({
-            title: `Desea subir el archivo ${getFile.name}?`,
+            title: `Desea subir el archivo ${getFile.name} (${ (getFile.size) / 1000000 + " MB" })`,
             text: "No habrá manera de revertir esto!",
             type: 'warning',
             showCancelButton: true,
@@ -146,11 +146,6 @@ export default {
             confirmButtonText: 'Si, súbelo!'
           }).then((result) => {
             if (result.value) {
-              swal(
-                'Subido exitosamente!',
-                '',
-                'success'
-              )
               e.preventDefault();
               const uploader = document.getElementById('uploader');
               let size = 5242880 // equivale a 5MB -> 5242880
@@ -164,7 +159,7 @@ export default {
                 uploader.value = percentage;
               },
               function error(err){
-                console.log(err)
+                  console.log(err)
               },
               function complete(){
                 var URL_r = storageRef.getDownloadURL().then(function(url){
@@ -218,8 +213,7 @@ export default {
                     }
                 });
                 console.log(getFile.name)
-
-                }
+              }
               );
             }
           })
