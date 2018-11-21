@@ -138,7 +138,7 @@ export default {
       let getFile = e.target.files[0]
       swal({
             title: `Desea subir el archivo ${getFile.name} (${ (getFile.size) / 1000000 + " MB" })`,
-            text: "No habrá manera de revertir esto!",
+            text: "No podrás revertir esto!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
