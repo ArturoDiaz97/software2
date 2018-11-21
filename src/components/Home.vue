@@ -1,9 +1,14 @@
 <template>
   <div>
-    <div class="correo">
+
+      <div class="correo" align="RIGHT">
+      <div class="hom-box"align="center" >
+        <img src="../assets/logohome.png" alt="avatar" class="avatar">
+      </div>
       <p>{{email}}</p>
+
     </div>
-    <div class="salir">
+    <div class="salir" align="RIGHT">
       <a href="#" @click ="logout"> Cerrar sesión </a>
     </div>
 
@@ -24,25 +29,76 @@
             <b-tab title="Asesorias por atender">
               <b-list-group flush>
                 <b-list-group-item   v-for="asesoria in asesorias"  v-if="id == asesoria.profesor && asesoria.estado=='ACEPTADO'">
-                  <table style="margin: 0 auto;">
-                      {{asesoria.nameAlumno}}
-                      {{asesoria.dia}}
-                  </table>
-                  <div>
-                    <input id="file" type="file" value="upload" @change="fileBtn($event, asesoria['.key'])">
-                  </div>
-                  <div>
-                    <progress value="0" max="100" id="uploader"></progress>
-                  </div>
-                  <div>
-                    <b-button @click ="marcar_atendida(asesoria['.key'])"> Marcar atendida</b-button>
-                  </div>
-                </b-list-group-item>
-              </b-list-group>
-            </b-tab>
-          </b-tabs>
-        </b-card>
-      </div>
+                <table style="margin: 0 auto;">
+                                <tr>
+                                  <td>
+                                    <div >
+                                      <input id="file" type="file" value="upload" @change="fileBtn($event, asesoria['.key'])">
+                                    </div>
+                                    <div   align="left">
+                                      <progress value="0" max="100" id="uploader"></progress>
+                                    </div>
+                                  </td>
+                                  <td >
+                                      <div   align="Center">
+                                  {{asesoria.nameAlumno}}
+                                   <br />
+                                  {{asesoria.dia}}
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div   align="left">
+                                        <b-button @click ="marcar_atendida(asesoria['.key'])"> Marcar atendida</b-button>
+                                      </div>
+                                    </td>
+                                    <td>
+                                     <div >
+                                      <b-btn v-b-modal.modal1>Detalle</b-btn>
+
+                                      <!-- Modal Component -->
+                                       <b-modal id="modal1" title="Bootstrap-Vue">
+                                          Nombre:      {{asesoria.nameAlumno}}<br />
+                                          Día:         {{asesoria.dia}}<br />
+                                          Lugar:       {{asesoria.lugar}} <br />
+                                          Asunto:      {{asesoria.tema}} <br />
+                                          Archivo:  {{asesoria.archivos["-LRbZih7lk-kQQQzKI_U"].name_archivo}}{{asesoria.archivos["-LRbZih7lk-kQQQzKI_U"].size_archivo}}
+                                          Archivo:  {{asesoria.archivos['.key']}}
+                                       </b-modal>
+                                      </div>
+                                    </td>
+                                    </tr>
+                                </table>
+
+                              </b-list-group-item>
+                            </b-list-group>
+                          </b-tab>
+                        </b-tabs>
+                      </b-card>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div class="col-sm-6">
         <b-card-group deck>
             <b-card no-body header="<b>Solicitudes pendientes</b>">
@@ -138,7 +194,7 @@ export default {
       let getFile = e.target.files[0]
       swal({
             title: `Desea subir el archivo ${getFile.name} (${ (getFile.size) / 1000000 + " MB" })`,
-            text: "No podrás revertir esto!",
+            text: "No habrá manera de revertir esto!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
